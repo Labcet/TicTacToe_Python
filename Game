@@ -1,0 +1,97 @@
+from random import randrange
+
+board = [['1','2','3'],['4','X','6'],['7','8','9']]
+cant_X = 0
+cant_O = 0
+
+def drawBoard():
+    for i in range(len(board)):
+        print("+-------+-------+-------+")
+        print("|       |       |       |")
+        print("|   "+board[i][0]+"   |   "+board[i][1]+"   |   "+board[i][2]+"   |")
+        print("|       |       |       |")
+    print("+-------+-------+-------+")
+
+def playerValue():
+    global cant_O
+    flag = False
+    ix,iy = 0,0
+    num = input("\nIngresa tu movimiento: ")
+    if(int(num)>0 and int(num)<10):
+        for i in range(len(board)):
+            for j in range(len(board)):
+                if(num == board[i][j]):
+                    flag = True
+                    ix = i
+                    iy = j
+                    break
+        if(flag):
+            board[ix][iy] = 'O'
+            cant_O+=1
+            print()
+            drawBoard()
+        else:
+            playerValue()
+    else:
+        print("Error!")
+
+def machineValue():
+    global cant_X
+    
+    ix,iy = randrange(2),randrange(2)
+    flag = True
+
+    while(flag):    
+        if(board[ix][iy]!= 'X' and board[ix][iy]!= 'O'):
+            board[ix][iy] = 'X'
+            cant_X+=1
+            flag = False
+        else:
+            ix,iy = randrange(0,3),randrange(0,3)
+    print()
+    drawBoard()
+
+def verifyVictory():
+    global cant_O,cant_X
+    
+    if(board[0][0]==board[0][1]==board[0][2]=='X' or\
+       board[1][0]==board[1][1]==board[1][2]=='X' or\
+       board[2][0]==board[2][1]==board[2][2]=='X' or\
+       board[0][0]==board[1][0]==board[2][0]=='X' or\
+       board[0][1]==board[1][1]==board[2][1]=='X' or\
+       board[0][2]==board[1][2]==board[2][2]=='X' or\
+       board[0][0]==board[1][1]==board[2][2]=='X' or\
+       board[0][2]==board[1][1]==board[2][0]=='X'):
+       return 1
+    elif(board[0][0]==board[0][1]==board[0][2]=='O' or\
+           board[1][0]==board[1][1]==board[1][2]=='O' or\
+           board[2][0]==board[2][1]==board[2][2]=='O' or\
+           board[0][0]==board[1][0]==board[2][0]=='O' or\
+           board[0][1]==board[1][1]==board[2][1]=='O' or\
+           board[0][2]==board[1][2]==board[2][2]=='O' or\
+           board[0][0]==board[1][1]==board[2][2]=='O' or\
+           board[0][2]==board[1][1]==board[2][0]=='O'):
+        return 2
+    elif(cant_X == 4 and cant_O == 4):
+        return 3
+    else:
+        return 0
+
+def game():
+    global cant_O,cant_X
+    while(verifyVictory() == 0):
+        playerValue()
+        if(verifyVictory() == 2):
+            break
+        machineValue()
+        if(verifyVictory() == 3):
+            break
+    if(verifyVictory() == 1):
+        print("\nGana la Maquina")
+    elif(verifyVictory() == 2):
+        print("\nGanaste!!")
+    else:
+        print("\nEmpate")
+
+drawBoard()
+game()
